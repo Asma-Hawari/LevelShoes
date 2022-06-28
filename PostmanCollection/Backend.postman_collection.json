@@ -1,0 +1,571 @@
+{
+	"info": {
+		"_postman_id": "6fa5a9a4-c41e-453a-99d2-b014a720ed78",
+		"name": "Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19383659"
+	},
+	"item": [
+		{
+			"name": "createCustomer",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "createCustomer Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData =  JSON.parse(responseBody);",
+							"pm.collectionVariables.set(\"customer_token\", jsonData['data']['generateCustomerToken'].token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  generateCustomerToken(email: \"Asma.Hawari.AH@gmail.com\", password: \"b1b2b3l@w+\") {\n    token\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateCustomerCart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData =  JSON.parse(responseBody);",
+							"pm.collectionVariables.set(\"customer_cart\", jsonData['data']['customerCart'].id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{customer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "{\n  customerCart{\n    id\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}//graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"",
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateGuestCart",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  createEmptyCart\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}//graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"",
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add  Simple Items",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  addSimpleProductsToCart(\n    input: {\n      cart_id: \"sjd7Gb1lqVYnoabeB6V8pX7eFyOAx7YD\"\n      cart_items: [\n        {\n          data: {\n            quantity: 1\n            sku: \"24-MG04\"\n          }\n        }\n      ]\n    }\n  ) {\n    cart {\n      items {\n        id\n        product {\n          sku\n          stock_status\n        }\n        quantity\n      }\n    }\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Configurabe Items",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  addConfigurableProductsToCart(\n    input: {\n      cart_id: \"{{customer_cart}}\"\n      cart_items: [\n        {\n          parent_sku: \"31-MG04\"\n          data: {\n            quantity: 1\n            sku: \"30-MG04\"\n          }\n        }\n      ]\n    }\n  ) {\n    cart {\n      items {\n        uid\n        quantity\n        product {\n          name\n          sku\n        }\n        ... on ConfigurableCartItem {\n          configurable_options {\n            option_label\n          }\n        }\n      }\n    }\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Simple Items",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{customer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  updateCartItems(\n    input: {\n      cart_id: \"{{customer_cart}}\",\n      cart_items: [\n        {\n          cart_item_uid: \"MQ==\"\n          quantity: 3\n        }\n      ]\n    }\n  ){\n    cart {\n      items {\n        uid\n        product {\n          name\n        }\n        quantity\n      }\n      prices {\n        grand_total{\n          value\n          currency\n        }\n      }\n    }\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Configurabe Items",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{customer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  updateCartItems(\n    input: {\n      cart_id: \"{{customer_cart}}\",\n      cart_items: [\n        {\n          cart_item_uid: \"MQ==\"\n          quantity: 3\n        }\n      ]\n    }\n  ){\n    cart {\n      items {\n        uid\n        product {\n          name\n        }\n        quantity\n      }\n      prices {\n        grand_total{\n          value\n          currency\n        }\n      }\n    }\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetCartInfo",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "{\n  cart(cart_id: \"{{customer_cart}}\") {\n    email\n    billing_address {\n      city\n      country {\n        code\n        label\n      }\n      firstname\n      lastname\n      postcode\n      region {\n        code\n        label\n      }\n      street\n      telephone\n    }\n    shipping_addresses {\n      firstname\n      lastname\n      street\n      city\n      region {\n        code\n        label\n      }\n      country {\n        code\n        label\n      }\n      telephone\n      available_shipping_methods {\n        amount {\n          currency\n          value\n        }\n        available\n        carrier_code\n        carrier_title\n        error_message\n        method_code\n        method_title\n        price_excl_tax {\n          value\n          currency\n        }\n        price_incl_tax {\n          value\n          currency\n        }\n      }\n      selected_shipping_method {\n        amount {\n          value\n          currency\n        }\n        carrier_code\n        carrier_title\n        method_code\n        method_title\n      }\n    }\n    items {\n      id\n      product {\n        name\n        sku\n      }\n      quantity\n    }\n    available_payment_methods {\n      code\n      title\n    }\n    selected_payment_method {\n      code\n      title\n    }\n    applied_coupons {\n      code\n    }\n    prices {\n      grand_total {\n        value\n        currency\n      }\n    }\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Shpping Address",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{customer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  setShippingAddressesOnCart(\n  input: {\n    cart_id: \"{{customer_cart}}\",\n    shipping_addresses: [\n      {\n        address:{\n          firstname: \"Developer\"\n          lastname: \"Admin\"\n          company: \"Developer Company\"\n          country_code: \"IN\"\n          city: \"Ahmedabad\"\n\t\t\t\t\tstreet: [\"Ahmedabad\"]\n          region: \"GJ\"\n          postcode: \"380015\"\n          telephone: \"0123456789\"\n          save_in_address_book: false\n        },\n      }\n    ]\n  }\n  ){\n    cart{\n      shipping_addresses{\n        firstname\n        company\n        country{\n          label\n          code\n        }\n        city\n        street\n        region{\n          label\n          code\n        }\n        postcode\n        telephone\n      }\n    }\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Billing Address",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{customer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  setBillingAddressOnCart(\n    input: {\n      cart_id: \"{{customer_cart}}\"\n      billing_address: {\n        address: {\n          firstname: \"Developer\"\n          lastname: \"Test\"\n          company: \"Developer Test Company\"\n          country_code: \"IN\"\n          city: \"Ahmedabad\"\n          street: [\"Ahmedabad\"]\n          region: \"GJ\"\n          postcode: \"380015\"\n          telephone: \"0123456789\"\n          save_in_address_book: false\n        }\n        same_as_shipping: false\n      }\n    }\n  ) {\n    cart {\n      billing_address {\n        firstname\n        lastname\n        company\n        country {\n          label\n          code\n        }\n        city\n        street\n        region {\n          label\n          code\n        }\n        postcode\n        telephone\n      }\n    }\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set Shpping Method",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{customer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  setShippingMethodsOnCart(\n    input: {\n      cart_id: \"{{customer_cart}}\",\n      shipping_methods: [\n        {\n          carrier_code: \"freeshipping\"\n          method_code: \"freeshipping\"\n        }\n      ]\n    }\n  ) {\n    cart {\n      shipping_addresses {\n        selected_shipping_method {\n          carrier_code\n          carrier_title\n          method_code\n          method_title\n          amount {\n            value\n            currency\n          }\n        }\n      }\n    }\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set Payment Method",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{customer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  setPaymentMethodOnCart(input: {\n      cart_id: \"{{customer_cart}}\"\n      payment_method: {\n          code: \"cashondelivery\"\n      }\n  }) {\n    cart {\n      selected_payment_method {\n        code\n      }\n    }\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAvaiblePaymentsMethods",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{customer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\n  cart(cart_id: \"{{customer_cart}}\") {\n    available_payment_methods {\n      code\n      title\n    }\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateOrder",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{customer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  placeOrder(input: {cart_id: \"{{customer_cart}}\"}) {\n    order {\n      order_number\n    }\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/graphql",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "current_customer_cart",
+			"value": ""
+		},
+		{
+			"key": "customer_token",
+			"value": ""
+		},
+		{
+			"key": "customer_cart",
+			"value": ""
+		}
+	]
+}

@@ -1,0 +1,18 @@
+<div style="display: none">
+    <div class="block newsletter popup-newsletter" id="popup-modal">
+        <div class="content">
+            <p><?php echo $block->getPopupText();?></p>
+            <?php echo $block->getChildHtml('newsletter-form'); ?>
+        </div>
+    </div>
+</div>
+<script type="text/x-magento-init">
+    {
+        ".popup-newsletter": {
+            "newsletterpopup": {
+                "delay":"<?= $block->getPopupDelay(); ?>",
+                "title":"<?= $block->getPopupTitle(); ?>"
+            }
+        }
+    }
+</script>

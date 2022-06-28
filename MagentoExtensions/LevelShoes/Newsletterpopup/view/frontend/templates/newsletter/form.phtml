@@ -1,0 +1,51 @@
+<!--<form class="form subscribe"
+      novalidate
+      action="<?/*= $block->escapeUrl($block->getFormActionUrl()) */?>"
+      method="post"
+      data-mage-init='{"validation": {"errorClass": "mage-error"}}'
+      id="newsletter-validate-detail-popup">-->
+<div class="form subscribe" id="newsletter-validate-detail-popup">
+    <div class="field newsletter">
+        <div class="control">
+            <input name="email" type="email" id="newsletter-popup"
+                   placeholder="<?= $block->escapeHtmlAttr(__('Enter your email address')) ?>"
+                   data-mage-init='{"mage/trim-input":{}}'
+                   data-validate="{required:true, 'validate-email':true}"/>
+        </div>
+    </div>
+    <div class="actions">
+        <button class="action subscribe primary"
+                title="<?= $block->escapeHtmlAttr(__('Subscribe')) ?>"
+                type="submit"
+                aria-label="Subscribe"
+        id="subscribe"><span><?= $block->escapeHtml(__('Subscribe')) ?></span>
+        </button>
+    </div>
+</div>
+<script type="text/javascript">
+    require(["jquery"],function($) {
+        $(document).ready(function() {
+            $("#subscribe").on("click",function(){
+            var email =   $("#newsletter-popup").val();
+            var customurl = "<?php echo $this->getUrl().'levelshoes/index/index'?>";
+            $.ajax({
+                url: customurl,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    email: email ,
+                },
+                complete: function(response) {
+                    statusOk = response.responseJSON.status;
+                    console.log("status is" +' '+ statusOk);
+                    $('.newsletter-modal').css("display","none");
+                    $('.modals-overlay').css("background-color","transparent");
+                    $("#popup-modal").modal("closeModal");
+                },
+                error: function (xhr, status, errorThrown) {
+                    console.log('Error happens. Try again.');
+                }
+            });
+        });
+    })});
+</script>
