@@ -34,10 +34,15 @@ Popup should have less/requires customizations.
 
 ## The Solutions:
 The tools used are : 
+
 1- Magento Version 2.4.4 
+
 2- PHP8 
+
 3- Postman
+
 4- ngrok
+
 the collection and the environment are shared in this repository, as well as the new payment method and the newsletter popup
 
 kindly refer to [this link](https://www.loom.com/share/239c3ef56e854e849b4bc4170544e868) for frontend Demo:
